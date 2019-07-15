@@ -19,15 +19,13 @@ def fft(wave):
     nfft = 2048
     dft = np.fft.fft(wave, n)
     Adft = np.abs(dft)[:int(nfft/2)]
-    Pdft = np.abs(dft)[:int(nfft/2)] ** 2
-    return Adft, Pdft
+    return Adft
 
 def hz2mel(f):
     return 1127.01048 * np.log(f / 700.0 + 1.0)
 
 def mel2hz(m):
     return 700.0 * (np.exp(m / 1127.01048) - 1.0)
-
 
 def melFilterBank(spec, fs=8820.0, nfft=2048, numChannels=20):
     fmax = fs / 2
@@ -61,15 +59,13 @@ def dct(spec, nceps=12):
     return spec[:nceps]
 
 def main():
-    wav, fs = sf.read("a.wav")
-    wav = cut_wave(wave_data)
-    wav = preEmphasis(wav)
-    wav = window(wav)
-    A_spec, P_spec = fft(wav)
-    A_spec, fcenters = melFilterBank(A_spec)
-    P_spec, fcenters = melFilterBank(P_spec)
-    A_spec = dct(A_spec)
-    P_spec = dct(P_spec)
+    wave, fs = sf.read("a.wav")
+    wave = cut_wave(wave)
+    wave = preEmphasis(wave)
+    wave = window(wave)
+    spec= fft(wave)
+    mspec, fcenters = melFilterBank(spec)
+    ceps = dct(mspec)
 
 if __name__ == '__main__':
     main()
