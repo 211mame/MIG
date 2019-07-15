@@ -3,12 +3,7 @@ import os
 import argparse
 
 import numpy as np
-
-import h5py
 import time
-
-import matplotlib as mpl
-mpl.use('Agg')
 import matplotlib.pylab as plt
 
 import keras.backend as K
@@ -51,18 +46,9 @@ def plot_generated_batch(X_proc, X_raw, generator_model, batch_size, suffix):
     plt.clf()
     plt.close()
 
-# tmp load data gray to color
-def my_load_data(datasetpath):
-    with h5py.File(datasetpath, "r") as hf:
-        X_full_train = hf["train_data_gen"][:].astype(np.float32)
-        X_full_train = my_normalization(X_full_train)
-        X_sketch_train = hf["train_data_raw"][:].astype(np.float32)
-        X_sketch_train = my_normalization(X_sketch_train)
-        X_full_val = hf["val_data_gen"][:].astype(np.float32)
-        X_full_val = my_normalization(X_full_val)
-        X_sketch_val = hf["val_data_raw"][:].astype(np.float32)
-        X_sketch_val = my_normalization(X_sketch_val)
-        return X_full_train, X_sketch_train, X_full_val, X_sketch_val
+def load_data(dataset_path):
+    #データセット読み込み用関数
+    pass
 
 
 def extract_patches(X, patch_size):
@@ -183,7 +169,7 @@ def my_train(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Train Font GAN')
-    parser.add_argument('--datasetpath', '-d', type=str, required=True)
+    parser.add_argument('--dataset_path', '-d', type=str, required=True)
     parser.add_argument('--patch_size', '-p', type=int, default=64)
     parser.add_argument('--batch_size', '-b', type=int, default=5)
     parser.add_argument('--epoch','-e', type=int, default=400)

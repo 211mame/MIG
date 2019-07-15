@@ -72,7 +72,7 @@ def generator_unet_upsampling(img_shape, disc_img_shape, model_name="generator_u
     return generator_unet
 
 
-def DCGAN_discriminator(img_shape, disc_img_shape, patch_num, model_name='DCGAN_discriminator'):
+def discriminator(img_shape, disc_img_shape, patch_num, model_name='DCGAN_discriminator'):
     disc_raw_img_shape = (disc_img_shape[0], disc_img_shape[1], img_shape[-1])
     list_input = [Input(shape=disc_img_shape, name='disc_input_'+str(i)) for i in range(patch_num)]
     list_raw_input = [Input(shape=disc_raw_img_shape, name='disc_raw_input_'+str(i)) for i in range(patch_num)]
@@ -142,26 +142,24 @@ def DCGAN(generator, discriminator, img_shape, patch_size):
             x_patch = Lambda(lambda z: z[:, row_idx[0]:row_idx[1], col_idx[0]:col_idx[1], :])(genarated_image)
             list_gen_patch.append(x_patch)
 
-    DCGAN_output = discriminator(list_gen_patch+list_raw_patch)
+    output = discriminator(list_gen_patch+list_raw_patch)
 
     DCGAN = Model(inputs=[raw_input],
-                  outputs=[genarated_image, DCGAN_output],
+                  outputs=[genarated_image, output],
                   name='DCGAN')
 
     return DCGAN
 
-
-
-def my_load_generator(img_shape, disc_img_shape):
+def load_generator(img_shape, disc_img_shape):
     model = generator_unet_upsampling(img_shape, disc_img_shape)
     model.summary()
     return model
 
-def my_load_DCGAN_discriminator(img_shape, disc_img_shape, patch_num):
+def load_DCGAN_discriminator(img_shape, disc_img_shape, patch_num):
     model = DCGAN_discriminator(img_shape, disc_img_shape, patch_num)
     model.summary()
     return model
 
-def my_load_DCGAN(generator, discriminator, img_shape, patch_size):
+def load_DCGAN(generator, discriminator, img_shape, patch_size):
     model = DCGAN(generator, discriminator, img_shape, patch_size)
     return model
